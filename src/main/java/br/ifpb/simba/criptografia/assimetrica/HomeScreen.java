@@ -66,6 +66,7 @@ public class HomeScreen extends javax.swing.JFrame {
         jLabel7 = new javax.swing.JLabel();
         sendButton = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
+        jButton3 = new javax.swing.JButton();
 
         jFormattedTextField1.setText("jFormattedTextField1");
 
@@ -116,11 +117,9 @@ public class HomeScreen extends javax.swing.JFrame {
         inputTextMsg.setRows(5);
         jScrollPane1.setViewportView(inputTextMsg);
 
-        encryptedField.setEditable(false);
         encryptedField.setColumns(20);
         encryptedField.setLineWrap(true);
         encryptedField.setRows(5);
-        encryptedField.setFocusable(false);
         jScrollPane2.setViewportView(encryptedField);
 
         jLabel5.setText("Mensagem a ser Enviada:");
@@ -147,6 +146,13 @@ public class HomeScreen extends javax.swing.JFrame {
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton2ActionPerformed(evt);
+            }
+        });
+
+        jButton3.setText("TRADUZIR");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
             }
         });
 
@@ -181,18 +187,21 @@ public class HomeScreen extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 269, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(sendButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(jScrollPane2)
                     .addComponent(jScrollPane3)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel6)
                             .addComponent(jLabel7)
                             .addComponent(jLabel5))
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 269, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(sendButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -228,7 +237,9 @@ public class HomeScreen extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(jLabel6)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jScrollPane2))
                 .addGap(18, 18, 18)
                 .addComponent(jLabel7)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -289,25 +300,16 @@ public class HomeScreen extends javax.swing.JFrame {
         } else if (inputTextQ.getText().equals("") || inputTextQ.getText().isEmpty()) {
             JOptionPane.showMessageDialog(null, "O Valor de P deve ser inserido!");
         } else {
-
+            
             if (!keyGenerator.getPublicKey().isMissAValue()) {
                 jButton2ActionPerformed(evt);
             }
             
             String msg = inputTextMsg.getText();
-
             BigInteger[] encodeMessage = (BigInteger[]) encoderEngine
                     .encodeMessage(msg, keyGenerator.getPublicKey());
 
-            String decodeMessage = encoderEngine
-                    .decodeMessage(encodeMessage, keyGenerator.getPrivateKey());
-
-            StringBuilder encoded = new StringBuilder("");
-            for (BigInteger bigInteger : encodeMessage) {
-                encoded.append(new String(bigInteger.toByteArray()));
-            }
-            encryptedField.setText(encoded.toString());
-            uncryptedField.setText(decodeMessage);
+            encryptedField.setText(Arrays.toString(encodeMessage));
         }
     }//GEN-LAST:event_sendButtonActionPerformed
 
@@ -318,6 +320,20 @@ public class HomeScreen extends javax.swing.JFrame {
     private void inputTextQActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_inputTextQActionPerformed
         inputTextQ.setText("");
     }//GEN-LAST:event_inputTextQActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        String ec = encryptedField.getText();
+        String[] split = ec.replace("[", "").replace("]", "").replace(" ", "").split(",");
+        BigInteger[] encodeMessage = new BigInteger[split.length];
+        
+        for (int i = 0; i < split.length; i++) {
+            encodeMessage[i] = new BigInteger(split[i]);
+        }
+        
+        String decodeMessage = encoderEngine
+                    .decodeMessage(encodeMessage, keyGenerator.getPrivateKey());
+        uncryptedField.setText(decodeMessage);
+    }//GEN-LAST:event_jButton3ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -361,6 +377,7 @@ public class HomeScreen extends javax.swing.JFrame {
     private javax.swing.JTextField inputTextQ;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
     private javax.swing.JFormattedTextField jFormattedTextField1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
