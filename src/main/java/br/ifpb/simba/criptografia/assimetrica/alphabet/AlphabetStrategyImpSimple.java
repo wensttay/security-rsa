@@ -7,7 +7,7 @@ package br.ifpb.simba.criptografia.assimetrica.alphabet;
  */
 public class AlphabetStrategyImpSimple implements AlphabetStrategy {
 
-    String alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    String alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ "
             + "abcdefghijklmnopqrstuvwxyz"
             + "1234567890"
             + "\"\'!@#$%*()-_+=`´{}[]^~:;?/,.|\\¹²³£¢¬§ªº°"
